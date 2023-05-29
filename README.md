@@ -2,6 +2,8 @@
 
 Speak-Write is a fast and simple voice-to-text desktop application leveraging OpenAI's Whisper model.
 
+Most importantly, **this application is private**: All processing is done locally, nothing ever leaves your computer. Audio is automatically deleted after transacription is completed.
+
 ## Features
 
 - Fast voice recognition
