@@ -9,9 +9,9 @@ Speak-Write is a fast and simple voice-to-text desktop application leveraging Op
 - Transcribe your words using a simple keyboard shortcut (Ctrl+Shift+0)
 
 ## Usage
-Once you start the application, press "Ctrl+Shift+0" to start recording. Release the keys to stop recording and transcribe the speech to text in whatever text application you have open.
+Download the [latest executable](https://github.com/zachtsk/speak-write/releases/tag/v0.1.0).
 
-Enjoy typing without typing!
+After the application is started, you can press "Shift+Ctrl+0" to start recording. Once you release the keys, the application will transcribe your words and paste them into the active window.
 
 ## Building from source
 
