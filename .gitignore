@@ -2,3 +2,4 @@
 *.pyc
 src/speak_write.egg-info/
 build/
+dist/
