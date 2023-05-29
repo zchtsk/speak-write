@@ -61,7 +61,7 @@ pip install -r requirements-dev.txt
 6. Run PyInstaller to build the .exe file:
 
 ```bash 
-pyinstaller --onefile --windowed --add-data "assets/megaphone.png;assets" --icon=assets/megaphone.png --name speak-write src/main.py
+pyinstaller speak-write.spec
 ```
 
 This command will create a one-file executable in the `dist/` directory.
