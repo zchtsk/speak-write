@@ -63,7 +63,7 @@ class VoiceRecorder:
     def transcribe_audio(self):
         """Transcribe the recorded audio using the Faster Whisper ASR model."""
         # Load the Faster Whisper ASR model
-        model = WhisperModel("base", device="tiny", compute_type="int8")
+        model = WhisperModel("tiny", device="cpu", compute_type="int8")
         segments, info = model.transcribe(self.file_path, beam_size=5)
         # Combine the transcriptions from all segments
         transcription = " ".join(segment.text for segment in segments)
