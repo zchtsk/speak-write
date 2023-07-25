@@ -54,12 +54,6 @@ venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-Optionally, to build the .exe file, run the following command:
-
-```bash
-pip install -r requirements-dev.txt
-```
-
 6. Run PyInstaller to build the .exe file:
 
 ```bash 
