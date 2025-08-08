@@ -27,19 +27,28 @@ def on_hotkey_pressed(vr, overlay_queue):
 def on_hotkey_released(vr, overlay_queue):
     print("Hotkey released: Stop recording and transcribe")
     vr.stop_recording()
+    
+    original_clipboard = None
+    try:
+        original_clipboard = pyperclip.paste()
+    except:
+        pass
+    
     with Overlay(txt="Processing"):
         transcription = vr.transcribe_audio()
         transcription = transcription.strip()
         vr.clean_up()
 
-    # Copy the transcribed text to the clipboard and paste it
-    print(f"Transcription: {transcription}")
-    pyperclip.copy(transcription)
-    pyautogui.hotkey("ctrl", "v")
-    time.sleep(.25)
-    pyautogui.keyUp('ctrl')
-    pyautogui.keyUp('shift')
-    pyautogui.keyUp('0')
+    if transcription:
+        print(f"Transcription: {transcription}")
+        pyperclip.copy(transcription)
+        
+        pyautogui.hotkey("ctrl", "v")
+        time.sleep(0.1)
+        
+        if original_clipboard is not None:
+            time.sleep(0.5)
+            pyperclip.copy(original_clipboard)
 
 def keyboard_event_handler(vr, overlay_queue):
     keyboard.add_hotkey("ctrl+shift+0", on_hotkey_pressed, args=(vr, overlay_queue), suppress=False,

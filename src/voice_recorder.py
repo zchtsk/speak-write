@@ -2,6 +2,8 @@ import os
 import tempfile
 import time
 import wave
+import gc
+import atexit
 
 from src.gui_overlay import Overlay
 import pyaudio as pyaudio
@@ -17,6 +19,29 @@ class VoiceRecorder:
         self.audio = pyaudio.PyAudio()
         self.frames = []
         self.file_path = None
+        
+        model_path = self._get_model_path()
+        self.model = WhisperModel(model_path, device="cpu", compute_type="int8")
+        
+        atexit.register(self.cleanup_resources)
+    
+    def _get_model_path(self):
+        """Get the path to the bundled Whisper model."""
+        import sys
+        
+        if hasattr(sys, '_MEIPASS'):
+            return os.path.join(sys._MEIPASS, 'whisper_model')
+        else:
+            snapshot_dir = os.path.join(
+                os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 
+                'models', 
+                'models--guillaumekln--faster-whisper-tiny',
+                'snapshots',
+                'ab6d5dcfa0c30295cc49fe2e4ff84a74b4bcffb7'
+            )
+            if os.path.exists(os.path.join(snapshot_dir, 'model.bin')):
+                return snapshot_dir
+            return "tiny"
 
     def record_audio(self):
         """Record audio for up to 30 seconds."""
@@ -61,18 +86,33 @@ class VoiceRecorder:
         self.frames = []
 
     def transcribe_audio(self):
-        """Transcribe the recorded audio using the Faster Whisper ASR model."""
-        # Load the Faster Whisper ASR model
-        model = WhisperModel("tiny", device="cpu", compute_type="int8")
-        segments, info = model.transcribe(self.file_path, beam_size=5)
-        # Combine the transcriptions from all segments
-        transcription = " ".join(segment.text for segment in segments)
-        return transcription
+        """Transcribe the recorded audio using the pre-initialized Whisper model."""
+        try:
+            segments, info = self.model.transcribe(self.file_path, beam_size=5)
+            transcription = " ".join(segment.text for segment in segments)
+            gc.collect()
+            return transcription
+        except Exception as e:
+            print(f"Transcription error: {e}")
+            return ""
 
     def clean_up(self):
-        """Remove the recorded audio file."""
+        """Remove the recorded audio file and clear frames."""
         if self.file_path:
             try:
                 os.remove(self.file_path)
-            except:
-                pass
+            except Exception as e:
+                print(f"File cleanup error: {e}")
+        
+        self.frames.clear()
+        gc.collect()
+
+    def cleanup_resources(self):
+        """Clean up all resources."""
+        try:
+            if hasattr(self, 'audio') and self.audio:
+                self.audio.terminate()
+        except Exception as e:
+            print(f"PyAudio cleanup error: {e}")
+        
+        self.clean_up()
