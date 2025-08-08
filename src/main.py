@@ -41,14 +41,37 @@ def on_hotkey_released(vr, overlay_queue):
 
     if transcription:
         print(f"Transcription: {transcription}")
-        pyperclip.copy(transcription)
         
-        pyautogui.hotkey("ctrl", "v")
+        pyautogui.keyUp('ctrl')
+        pyautogui.keyUp('shift')
+        pyautogui.keyUp('alt')
+        pyautogui.keyUp('win')
         time.sleep(0.1)
         
-        if original_clipboard is not None:
+        pyperclip.copy(transcription)
+        time.sleep(0.1)
+        
+        pyautogui.keyDown('ctrl')
+        pyautogui.press('v')
+        pyautogui.keyUp('ctrl')
+        
+        # Ensure clean keyboard state after pasting
+        time.sleep(0.1)
+        pyautogui.keyUp('ctrl')
+        pyautogui.keyUp('shift')
+        pyautogui.keyUp('alt')
+        pyautogui.keyUp('win')
+        
+        def restore_clipboard():
             time.sleep(0.5)
-            pyperclip.copy(original_clipboard)
+            if original_clipboard is not None:
+                try:
+                    pyperclip.copy(original_clipboard)
+                except:
+                    pass
+        
+        import threading
+        threading.Thread(target=restore_clipboard, daemon=True).start()
 
 def keyboard_event_handler(vr, overlay_queue):
     keyboard.add_hotkey("ctrl+shift+0", on_hotkey_pressed, args=(vr, overlay_queue), suppress=False,
