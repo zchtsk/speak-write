@@ -96,7 +96,7 @@ pip install -r requirements.txt
 python download_model.py
 ```
 
-5. **Update build configuration** (automatically detects model snapshot):
+5. **Generate build configuration** (creates spec file from template):
 ```bash
 python update_spec.py
 ```

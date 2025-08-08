@@ -3,3 +3,5 @@
 src/speak_write.egg-info/
 build/
 dist/
+models/
+speak-write.spec

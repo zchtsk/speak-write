@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import os
-import glob
 
 def find_whisper_snapshot():
     """Find the actual snapshot directory for the whisper model."""
@@ -31,43 +30,44 @@ def find_whisper_snapshot():
     
     return None
 
-def update_spec_file():
-    """Update the PyInstaller spec file with the correct snapshot path."""
+def generate_spec_file():
+    """Generate the PyInstaller spec file from template."""
     snapshot_hash = find_whisper_snapshot()
     
     if not snapshot_hash:
         print("Error: Could not find Whisper model snapshot")
+        print("Make sure to run 'python download_model.py' first")
         return False
     
     print(f"Found snapshot: {snapshot_hash}")
     
+    template_file = os.path.join(os.path.dirname(__file__), 'speak-write.spec.template')
     spec_file = os.path.join(os.path.dirname(__file__), 'speak-write.spec')
     
-    # Read current spec file
-    with open(spec_file, 'r') as f:
-        content = f.read()
+    if not os.path.exists(template_file):
+        print(f"Error: Template file {template_file} not found")
+        return False
     
-    # Generate the new datas section
+    # Read template
+    with open(template_file, 'r') as f:
+        template_content = f.read()
+    
+    # Generate model paths
     base_path = f'models/models--guillaumekln--faster-whisper-tiny/snapshots/{snapshot_hash}'
-    new_datas = f"""    datas=[
-        ('assets/megaphone.png', 'assets'),
-        ('{base_path}/config.json', 'whisper_model/'),
+    model_paths = f"""('{base_path}/config.json', 'whisper_model/'),
         ('{base_path}/model.bin', 'whisper_model/'),
         ('{base_path}/tokenizer.json', 'whisper_model/'),
-        ('{base_path}/vocabulary.txt', 'whisper_model/')
-    ],"""
+        ('{base_path}/vocabulary.txt', 'whisper_model/')"""
     
-    # Replace the datas section
-    import re
-    pattern = r'datas=\[.*?\],'
-    updated_content = re.sub(pattern, new_datas.strip() + ',', content, flags=re.DOTALL)
+    # Replace placeholder
+    spec_content = template_content.replace('{WHISPER_MODEL_PATHS}', model_paths)
     
-    # Write updated spec file
+    # Write spec file
     with open(spec_file, 'w') as f:
-        f.write(updated_content)
+        f.write(spec_content)
     
-    print(f"Updated {spec_file} with snapshot {snapshot_hash}")
+    print(f"Generated {spec_file} with snapshot {snapshot_hash}")
     return True
 
 if __name__ == "__main__":
-    update_spec_file()
+    generate_spec_file()
