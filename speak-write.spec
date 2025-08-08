@@ -13,7 +13,7 @@ a = Analysis(
         ('models/models--guillaumekln--faster-whisper-tiny/snapshots/ab6d5dcfa0c30295cc49fe2e4ff84a74b4bcffb7/model.bin', 'whisper_model/'),
         ('models/models--guillaumekln--faster-whisper-tiny/snapshots/ab6d5dcfa0c30295cc49fe2e4ff84a74b4bcffb7/tokenizer.json', 'whisper_model/'),
         ('models/models--guillaumekln--faster-whisper-tiny/snapshots/ab6d5dcfa0c30295cc49fe2e4ff84a74b4bcffb7/vocabulary.txt', 'whisper_model/')
-    ],
+    ],,
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},

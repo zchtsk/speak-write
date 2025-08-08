@@ -32,16 +32,35 @@ class VoiceRecorder:
         if hasattr(sys, '_MEIPASS'):
             return os.path.join(sys._MEIPASS, 'whisper_model')
         else:
-            snapshot_dir = os.path.join(
-                os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 
-                'models', 
-                'models--guillaumekln--faster-whisper-tiny',
-                'snapshots',
-                'ab6d5dcfa0c30295cc49fe2e4ff84a74b4bcffb7'
-            )
+            return self._find_local_model()
+    
+    def _find_local_model(self):
+        """Find the local Whisper model in the cache structure."""
+        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        cache_dir = os.path.join(base_dir, 'models', 'models--guillaumekln--faster-whisper-tiny')
+        
+        if not os.path.exists(cache_dir):
+            return "tiny"
+        
+        # Read the main ref to get the snapshot hash
+        main_ref_file = os.path.join(cache_dir, 'refs', 'main')
+        if os.path.exists(main_ref_file):
+            with open(main_ref_file, 'r') as f:
+                snapshot_hash = f.read().strip()
+            
+            snapshot_dir = os.path.join(cache_dir, 'snapshots', snapshot_hash)
             if os.path.exists(os.path.join(snapshot_dir, 'model.bin')):
                 return snapshot_dir
-            return "tiny"
+        
+        # Fallback: find any snapshot with model.bin
+        snapshots_dir = os.path.join(cache_dir, 'snapshots')
+        if os.path.exists(snapshots_dir):
+            for snapshot in os.listdir(snapshots_dir):
+                snapshot_path = os.path.join(snapshots_dir, snapshot)
+                if os.path.exists(os.path.join(snapshot_path, 'model.bin')):
+                    return snapshot_path
+        
+        return "tiny"
 
     def record_audio(self):
         """Record audio for up to 30 seconds."""

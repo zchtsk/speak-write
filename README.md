@@ -96,12 +96,17 @@ pip install -r requirements.txt
 python download_model.py
 ```
 
-5. **Run from source** (for development):
+5. **Update build configuration** (automatically detects model snapshot):
+```bash
+python update_spec.py
+```
+
+6. **Run from source** (for development):
 ```bash
 python src/main.py
 ```
 
-6. **Build executable**:
+7. **Build executable**:
 ```bash
 pyinstaller speak-write.spec
 ```
