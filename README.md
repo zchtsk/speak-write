@@ -127,14 +127,6 @@ pip install -e .  # Install in editable mode
 - **Missing dependencies**: Ensure all requirements.txt packages are installed
 - **Whisper model download**: First run may take time to download the model
 
-## System Requirements
-
-- **Operating System**: Windows 10/11 (primary), Linux/macOS (experimental)
-- **RAM**: Minimum 4GB, 8GB recommended
-- **Storage**: ~500MB for dependencies and models
-- **Microphone**: Any system-compatible microphone
-- **Permissions**: Microphone access, keyboard input monitoring
-
 ## Contributing
 
 Contributions are welcome! Please feel free to submit issues, feature requests, or pull requests. When contributing:
