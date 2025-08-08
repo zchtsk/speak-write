@@ -91,17 +91,22 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-4. **Run from source** (for development):
+4. **Download Whisper model** (required for offline executable):
+```bash
+python download_model.py
+```
+
+5. **Run from source** (for development):
 ```bash
 python src/main.py
 ```
 
-5. **Build executable**:
+6. **Build executable**:
 ```bash
 pyinstaller speak-write.spec
 ```
 
-The executable will be created in the `dist/` directory as a single file.
+The executable will be created in the `dist/` directory as a single file with the Whisper model bundled inside (~80MB).
 
 ### Development Setup
 
